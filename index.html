@@ -153,6 +153,54 @@
             margin-top: 10px;
         }
 
+        /* 倒计时样式 */
+        .countdown-section {
+            margin-top: 30px;
+            text-align: center;
+            padding: 20px;
+            background: rgba(40, 40, 60, 0.7);
+            border-radius: 10px;
+        }
+
+        .countdown {
+            font-size: 2.2rem;
+            color: #ff6b6b;
+            margin: 20px 0;
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .countdown-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 80px;
+        }
+
+        .countdown-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            min-width: 80px;
+        }
+
+        .countdown-unit {
+            font-size: 1rem;
+            margin-top: 5px;
+            color: #aaa;
+        }
+
+        .countdown-message {
+            font-size: 1.2rem;
+            color: #ffd700;
+            margin-top: 10px;
+        }
+
         footer {
             text-align: center;
             margin-top: 50px;
@@ -174,6 +222,21 @@
             .reservation-count {
                 font-size: 2rem;
             }
+
+            .countdown {
+                font-size: 1.8rem;
+                gap: 5px;
+            }
+
+            .countdown-value {
+                font-size: 2rem;
+                min-width: 60px;
+                padding: 8px;
+            }
+
+            .countdown-item {
+                min-width: 60px;
+            }
         }
     </style>
 </head>
@@ -189,9 +252,10 @@
 
     <div class="content">
         <div class="poster-section">
-            <img src="https://s21.ax1x.com/2025/11/06/pZplvdg.webp" alt="唐朝诡事录之长安海报" class="poster">
+            <!-- 使用占位图片 -->
+            <img src="https://s21.ax1x.com/2025/11/06/pZplvdg.webp" alt="唐朝诡事录之长安海报"  width='400' height='560' viewBox='0 0 400 560'%3E%3Crect fill='%23333' width='400' height='560'/%3E%3Ctext fill='%23fff' font-family='sans-serif' font-size='30' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3E唐朝诡事录之长安%3C/text%3E%3C/svg%3E" alt="唐朝诡事录之长安海报" class="poster">
         </div>
-
+        
         <div class="info-section">
             <h2>剧集信息</h2>
 
@@ -213,6 +277,29 @@
             <div class="info-item">
                 <span class="info-label">简介：</span>
                 <span>本剧延续《唐朝诡事录》系列，讲述长安城中发生的一系列离奇案件，主角们抽丝剥茧，揭开隐藏在繁华盛世背后的惊天秘密。</span>
+            </div>
+
+            <div class="countdown-section">
+                <h2>距离上线时间</h2>
+                <div class="countdown" id="countdown">
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="days">00</div>
+                        <div class="countdown-unit">天</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="hours">00</div>
+                        <div class="countdown-unit">时</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="minutes">00</div>
+                        <div class="countdown-unit">分</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="seconds">00</div>
+                        <div class="countdown-unit">秒</div>
+                    </div>
+                </div>
+                <div class="countdown-message" id="countdownMessage">2025年11月8日中午12:00上线</div>
             </div>
 
             <div class="reservation-section">
@@ -239,8 +326,16 @@
         const errorMessage = document.getElementById('errorMessage');
         const updateTime = document.getElementById('updateTime');
 
+        // 倒计时相关元素
+        const daysElement = document.getElementById('days');
+        const hoursElement = document.getElementById('hours');
+        const minutesElement = document.getElementById('minutes');
+        const secondsElement = document.getElementById('seconds');
+        const countdownMessage = document.getElementById('countdownMessage');
+
         // API接口地址
-        const apiUrl = 'https://subscription.iqiyi.com/services/subscribe/countAndState.htm?authcookie=7cqpm2Zbm23SeWdDm3l5qCbq6IgUf95kZ4SVQplWXl7SjqIgdpWKiqD0Wm1JYYJqdtIBx091&subType=2&agentType=30&version=13.111.23635&dfp=a1e25e11e7d0b448139968c74af97e72120706a27fef58d792a4d7ce51a96b1497&subKeys=5188910059290200'
+        const apiUrl = 'https://subscription.iqiyi.com/services/subscribe/countAndState.htm?authcookie=7cqpm2Zbm23SeWdDm3l5qCbq6IgUf95kZ4SVQplWXl7SjqIgdpWKiqD0Wm1JYYJqdtIBx091&subType=2&agentType=30&version=13.111.23635&dfp=a1e25e11e7d0b448139968c74af97e72120706a27fef58d792a4d7ce51a96b1497&subKeys=5188910059290200';
+
         // 格式化数字
         function formatNumber(num) {
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -282,14 +377,52 @@
             }
         }
 
+        // 倒计时功能
+        function updateCountdown() {
+            // 设置上线时间：2025年11月8日中午12:00
+            const releaseDate = new Date('2025-11-08T12:00:00');
+            const now = new Date();
+
+            // 计算时间差（毫秒）
+            const timeDiff = releaseDate - now;
+
+            // 如果已经过了上线时间
+            if (timeDiff <= 0) {
+                daysElement.textContent = '00';
+                hoursElement.textContent = '00';
+                minutesElement.textContent = '00';
+                secondsElement.textContent = '00';
+                countdownMessage.textContent = '剧集已上线，欢迎观看！';
+                return;
+            }
+
+            // 计算天、时、分、秒
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+            // 更新倒计时显示
+            daysElement.textContent = days.toString().padStart(2, '0');
+            hoursElement.textContent = hours.toString().padStart(2, '0');
+            minutesElement.textContent = minutes.toString().padStart(2, '0');
+            secondsElement.textContent = seconds.toString().padStart(2, '0');
+        }
+
         // 页面加载时获取数据
         fetchReservationData();
+
+        // 初始化倒计时
+        updateCountdown();
 
         // 添加刷新按钮事件监听
         refreshBtn.addEventListener('click', fetchReservationData);
 
-        // 每5分钟自动刷新一次
-        setInterval(fetchReservationData, 5 * 60 * 1000);
+        // 每5分钟自动刷新一次预约数据
+        setInterval(fetchReservationData, 5 * 1 * 1000);
+
+        // 每秒更新一次倒计时
+        setInterval(updateCountdown, 1000);
     });
 </script>
 </body>
