@@ -255,7 +255,7 @@
             <!-- 使用占位图片 -->
             <img src="https://s21.ax1x.com/2025/11/06/pZplvdg.webp" alt="唐朝诡事录之长安海报"  width='400' height='560' viewBox='0 0 400 560'%3E%3Crect fill='%23333' width='400' height='560'/%3E%3Ctext fill='%23fff' font-family='sans-serif' font-size='30' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3E唐朝诡事录之长安%3C/text%3E%3C/svg%3E" alt="唐朝诡事录之长安海报" class="poster">
         </div>
-        
+
         <div class="info-section">
             <h2>剧集信息</h2>
 
@@ -278,7 +278,10 @@
                 <span class="info-label">简介：</span>
                 <span>本剧延续《唐朝诡事录》系列，讲述长安城中发生的一系列离奇案件，主角们抽丝剥茧，揭开隐藏在繁华盛世背后的惊天秘密。</span>
             </div>
-
+            <div class="info-item">
+                <span class="info-label">热度：</span>
+                <span class="heat-value" id="heatValue">--</span>
+            </div>
             <div class="countdown-section">
                 <h2>距离上线时间</h2>
                 <div class="countdown" id="countdown">
@@ -376,7 +379,69 @@
                 refreshBtn.disabled = false;
             }
         }
+// 热度API接口地址
+        const heatApiUrl = 'https://mesh.if.iqiyi.com/tvg/v2/lw/base_info?entity_id=2628396673367100&device_id=2sjzaktrme4artvvrxgtloka75hrqjex&auth_cookie=7cqpm2Zbm23SeWdDm3l5qCbq6IgUf95kZ4SVQplWXl7SjqIgdpWKiqD0Wm1JYYJqdtIBx091&user_id=1097201185&vip_type=1&vip_status=1&conduit_id=&pcv=13.111.23635&app_version=13.111.23635&ext=&app_mode=standard&scale=125&timestamp=1762501117503&src=pca_tvg&os=&ad_ext=%7B%22r%22%3A%222.6.4-ares6-pure%22%7D&sign=239D2E523677EC7FFFE1C2577E62E1EB';
 
+        // 获取热度数据
+        // 获取热度数据
+        async function fetchHeatData() {
+            loading.style.display = 'block';
+            errorMessage.style.display = 'none';
+            refreshBtn.disabled = true;
+
+            try {
+                const response = await fetch(heatApiUrl);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP错误! 状态: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('API返回数据:', result); // 调试用
+
+                // 更严格的条件检查
+                if (result &&
+                    result.data &&
+                    result.data.base_data &&
+                    typeof result.data.base_data.heat === 'number') {
+
+                    const heat = result.data.base_data.heat;
+                    const heatValueElement = document.getElementById('heatValue');
+                    heatValueElement.textContent = formatNumber(heat);
+                    heatValueElement.style.color = '#ff6b6b'; // 红色
+                    // 更新最后更新时间
+                    const now = new Date();
+                    updateTime.textContent = `最后更新: ${now.toLocaleString('zh-CN')}`;
+                } else {
+                    throw new Error('API返回数据格式不正确或热度值不存在');
+                }
+            } catch (error) {
+                console.error('获取热度数据失败:', error);
+                errorMessage.textContent = `获取热度数据失败: ${error.message}`;
+                errorMessage.style.display = 'block';
+                const heatValueElement = document.getElementById('heatValue');
+                heatValueElement.textContent = '--';
+            } finally {
+                loading.style.display = 'none';
+                refreshBtn.disabled = false;
+            }
+        }
+
+
+
+
+// 格式化数字，添加千位分隔符
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+// 页面加载时获取热度数据
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchHeatData();
+
+            // 每5分钟自动刷新一次热度数据
+            setInterval(fetchHeatData, 5 * 60 * 1000);
+        });
         // 倒计时功能
         function updateCountdown() {
             // 设置上线时间：2025年11月8日中午12:00
@@ -411,6 +476,7 @@
 
         // 页面加载时获取数据
         fetchReservationData();
+        fetchHeatData();
 
         // 初始化倒计时
         updateCountdown();
@@ -418,8 +484,10 @@
         // 添加刷新按钮事件监听
         refreshBtn.addEventListener('click', fetchReservationData);
 
-        // 每5分钟自动刷新一次预约数据
+        // 每5秒自动刷新一次预约数据
         setInterval(fetchReservationData, 5 * 1 * 1000);
+        // 每5秒自动刷新一次热度数据
+        setInterval(fetchHeatData, 5 * 1 * 1000);
 
         // 每秒更新一次倒计时
         setInterval(updateCountdown, 1000);
