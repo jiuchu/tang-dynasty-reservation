@@ -312,7 +312,7 @@
     <div class="content">
         <div class="poster-section">
             <!-- 使用占位图片 -->
-            <img src="https://s21.ax1x.com/2025/11/06/pZplvdg.webp" alt="唐朝诡事录之长安海报"  width='400' height='560' viewBox='0 0 400 560'%3E%3Crect fill='%23333' width='400' height='560'/%3E%3Ctext fill='%23fff' font-family='sans-serif' font-size='30' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3E唐朝诡事录之长安%3C/text%3E%3C/svg%3E" alt="唐朝诡事录之长安海报" class="poster">
+            <img src="./a_100594050_m_601_m1_318_424.webp" alt="唐朝诡事录之长安海报"  width='400' height='560' viewBox='0 0 400 560'%3E%3Crect fill='%23333' width='400' height='560'/%3E%3Ctext fill='%23fff' font-family='sans-serif' font-size='30' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3E唐朝诡事录之长安%3C/text%3E%3C/svg%3E" alt="唐朝诡事录之长安海报" class="poster">
         </div>
 
         <div class="info-section">
@@ -351,11 +351,18 @@
                 <span class="info-label">更新进度：</span>
                 <span id="updateStatus">--</span>
             </div>
-
             <div class="info-item">
-                <span class="info-label">更新提示：</span>
-                <span id="extraTip">--</span>
-            </div>
+                <div class="info-item">
+                    <span class="info-label ">微博指数：</span>
+                    <span id="weiboIndexValue" style="color: #ff6b6b;">--</span></div>
+                <div class="info-item">
+                    <div class="info-item">
+                        <span class="info-label ">实时播放量：</span>
+                        <span id="ssbflValue" style="color: #ff6b6b;">--</span></div>
+<!--            <div class="info-item">-->
+<!--                <span class="info-label">更新提示：</span>-->
+<!--                <span id="extraTip">&#45;&#45;</span>-->
+<!--            </div>-->
 <!--            <div class="countdown-section">-->
 <!--                <h2>距离上线时间</h2>-->
 <!--                <div class="countdown" id="countdown">-->
@@ -464,10 +471,10 @@
         document.getElementById('updateStatus').textContent = updateInfo.update_status;
     }
 
-        // 更新提示
-        if (updateInfo.extra_tip) {
-        document.getElementById('extraTip').textContent = updateInfo.extra_tip;
-    }
+    //     // 更新提示
+    //     if (updateInfo.extra_tip) {
+    //     document.getElementById('extraTip').textContent = updateInfo.extra_tip;
+    // }
     }
     } else {
         throw new Error('API返回数据格式不正确或热度值不存在');
@@ -592,11 +599,74 @@
                     }, 300); // 添加轻微延迟确保用户能看到加载状态
                 }
             }
+            async function fetchWeiboIndexData() {
+                const weiboIndexElement = document.getElementById('weiboIndexValue');
+
+                try {
+                    const proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
+                    const targetUrl = encodeURIComponent('https://rprank.tv.weibo.cn/episode/api/detail?current_uid=2136166244&pid=3816&sign=a78cf49de3d6816c6e44005f1d69fa199d8b12fd&program_type=0&ts=1763476203&c=applet&gsid=_2A25EHz2bDeRxGeRP6FQQ9ijOzziIHXVkjTZTrDV6PUJbkdAbLUr3kWpNUCimGh7hwiXD7tNyWKRvUMCrsJ7L3VU_');
+
+                    const response = await fetch(proxyUrl + targetUrl);
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.code === 1000 && data.data && data.data.program) {
+                            // 提取微博指数数据
+                            const weiboScore = data.data.program.score;
+                            weiboIndexElement.textContent = weiboScore;
+                        } else {
+                            throw new Error('Invalid data format');
+                        }
+                    } else {
+                        throw new Error('Failed to fetch Weibo index data');
+                    }
+                } catch (error) {
+                    console.error('Error fetching Weibo index data:', error);
+                    weiboIndexElement.textContent = '--';
+                }
+            }
+
+// 获取实时播放量数据
+            async function fetchSSBFLData() {
+                const ssbflElement = document.getElementById('ssbflValue');
+
+                try {
+                    // 使用代理服务器获取数据
+                    const proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
+                    const targetUrl = encodeURIComponent('https://dengtapro.taopiaopiao.com/movie-detail.html?hideTitlebar=true&transparentStatusBar=true&mediaId=1535166&spm=a2o45.b48152885.1.1');
+
+                    const response = await fetch(proxyUrl + targetUrl);
+
+                    if (response.ok) {
+                        const html = await response.text();
+                        // 使用正则表达式提取实时播放量
+                        const ssbflMatch = html.match(/<div\s+class="num\s+num-color">\s*<span>([^<]+)<\/span>\s*<\/div>/);
+
+                        if (ssbflMatch && ssbflMatch[1]) {
+                            ssbflElement.textContent = ssbflMatch[1];
+                        } else {
+                            throw new Error('未找到实时播放量数据');
+                        }
+                    } else {
+                        throw new Error('请求失败');
+                    }
+                } catch (error) {
+                    console.error('获取实时播放量失败:', error);
+                    ssbflElement.textContent = '--';
+                }
+            }
+// 页面加载时获取实时播放量数据
+            fetchSSBFLData();
+
+
             // 页面加载时获取热度数据
         fetchHeatData();
-
+            fetchWeiboIndexData(); // 添加这一行
+// 每5秒自动刷新一次实时播放量数据
+            setInterval(fetchSSBFLData, 5 * 1000);
         // 每5秒自动刷新一次热度数据
         setInterval(fetchHeatData, 5 * 1000);
+        setInterval(fetchWeiboIndexData, 5 * 1000);
 
 // 页面加载时获取豆瓣评分数据
             fetchDoubanRating();
