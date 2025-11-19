@@ -1,707 +1,877 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>唐朝诡事录之长安 - 预约查询</title>
-    <style>
-        /* 数据更新抖动动画 */
-.value-update {
-    animation: valueUpdateAnimation 0.9s ease-in-out;
-}
-
-@keyframes valueUpdateAnimation {
-    0% {
-        transform: scale(1);
-        color: #e6e6e6;
+    <title>唐朝诡事录之长安 - 数据看板</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>        :root {
+        --primary: #8a2be2;
+        --secondary: #ff6b6b;
+        --dark: #0f0c29;
+        --darker: #09071f;
+        --light: #f8f9fa;
+        --gray: #6c757d;
+        --success: #20bf6b;
+        --warning: #f7b731;
+        --info: #3867d6;
     }
-    25% {
-        transform: scale(1.1);
-        color: #ffd700;
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    50% {
-        transform: scale(1.15);
-        color: #ffaa00;
+
+    body {
+        background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+        color: var(--light);
+        min-height: 100vh;
+        overflow-x: hidden;
     }
-    75% {
-        transform: scale(1.1);
-        color: #ffd700;
+
+    .background-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
     }
-    100% {
-        transform: scale(1);
-        color: #e6e6e6;
+
+    .background-animation div {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(138, 43, 226, 0.1);
+        animation: float 15s infinite linear;
     }
-}
 
-/* 按钮点击效果 */
-.btn-click {
-    animation: btnClickAnimation 0.3s ease;
-}
-
-@keyframes btnClickAnimation {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(0.95);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Microsoft YaHei', sans-serif;
+    @keyframes float {
+        0% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 0.2;
         }
-
-        body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e6e6e6;
-            min-height: 100vh;
-            padding: 20px;
+        50% {
+            opacity: 0.5;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            color: #ffd700;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            color: #aaa;
-        }
-
-        .content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 40px;
-            justify-content: center;
-        }
-
-        .poster-section {
-            flex: 1;
-            min-width: 300px;
-            max-width: 500px;
-            text-align: center;
-        }
-
-        .poster {
-            width: 100%;
-            max-width: 400px;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s ease;
-        }
-
-        .poster:hover {
-            transform: scale(1.03);
-        }
-
-        .info-section {
-            flex: 1;
-            min-width: 300px;
-            max-width: 600px;
-            background: rgba(30, 30, 50, 0.7);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .info-section h2 {
-            color: #ffd700;
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
-            padding-bottom: 10px;
-        }
-
-        .info-item {
-            margin-bottom: 15px;
-            line-height: 1.6;
-        }
-
-        .info-label {
-            font-weight: bold;
-            color: #ffd700;
-            display: inline-block;
-            width: 100px;
-        }
-
-        .reservation-section {
-            margin-top: 30px;
-            text-align: center;
-            padding: 20px;
-            background: rgba(40, 40, 60, 0.7);
-            border-radius: 10px;
-        }
-
-        .reservation-count {
-            font-size: 2.5rem;
-            color: #ffd700;
-            margin: 20px 0;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-        }
-
-        .refresh-btn {
-            background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
-            color: #1a1a2e;
-            border: none;
-            padding: 12px 25px;
-            font-size: 1.1rem;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
-        }
-
-        .refresh-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
-        }
-
-        /* 确保加载动画样式正确 */
-        .loading {
-            display: none;
-            color: #ffd700;
-            margin: 15px 0;
-            font-size: 0.9rem;
+        100% {
+            transform: translate(100vw, 100vh) rotate(360deg);
             opacity: 0;
-            transition: opacity 0.3s ease-in-out;
         }
+    }
 
-        .loading.show {
-            display: block;
-            opacity: 1;
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    header {
+        text-align: center;
+        padding: 30px 0;
+        position: relative;
+        z-index: 2;
+    }
+
+    .logo {
+        font-size: 3.5rem;
+        margin-bottom: 15px;
+        background: linear-gradient(45deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
+    }
+
+    h1 {
+        font-size: 2.8rem;
+        margin-bottom: 10px;
+        background: linear-gradient(45deg, var(--light), #ffd700);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: 1px;
+    }
+
+    .subtitle {
+        font-size: 1.3rem;
+        color: #aaa;
+        margin-bottom: 20px;
+    }
+
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+
+    .stat-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        background: linear-gradient(45deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-title {
+        font-size: 1.1rem;
+        color: #aaa;
+        margin-bottom: 10px;
+    }
+
+    .stat-value {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        background: linear-gradient(45deg, var(--light), #ffd700);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-trend {
+        display: flex;
+        align-items: center;
+        font-size: 0.9rem;
+    }
+
+    .trend-up {
+        color: var(--success);
+    }
+
+    .trend-down {
+        color: var(--secondary);
+    }
+
+    .content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    @media (max-width: 992px) {
+        .content {
+            grid-template-columns: 1fr;
         }
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+    .poster-section {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .poster {
+        width: 100%;
+        max-width: 350px;
+        border-radius: 15px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        transition: transform 0.3s ease;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .poster:hover {
+        transform: scale(1.05); /* 放大1.05倍 */
+    }
+
+    .info-section {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid rgba(138, 43, 226, 0.5);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-title i {
+        color: var(--primary);
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .info-item {
+        display: flex;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .info-item:hover {
+        background: rgba(138, 43, 226, 0.1);
+        transform: translateX(5px);
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: var(--primary);
+        min-width: 100px;
+        margin-right: 15px;
+    }
+
+    .progress-container {
+        margin: 20px 0;
+    }
+
+    .progress-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .footer-wrapper {
+        grid-column: 1 / -1;
+        text-align: center;
+    }
+
+    footer {
+        text-align: center;
+        padding: 30px 0;
+        color: #777;
+        font-size: 0.9rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    .progress-bar {
+        height: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        border-radius: 10px;
+        transition: width 1s ease;
+        position: relative;
+    }
+
+    .progress-fill::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        animation: shine 2s infinite;
+    }
+
+    @keyframes shine {
+        0% {
+            transform: translateX(-100%);
         }
-
-        .error-message {
-            display: none;
-            color: #ff6b6b;
-            margin: 10px 0;
-            background: rgba(255, 107, 107, 0.1);
-            padding: 10px;
-            border-radius: 5px;
+        100% {
+            transform: translateX(100%);
         }
+    }
 
-        .update-time {
-            font-size: 0.9rem;
-            color: #aaa;
-            margin-top: 10px;
+    .charts-section {
+        grid-column: 1 / -1;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 40px;
+    }
+
+    .chart-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+
+    @media (max-width: 768px) {
+        .chart-grid {
+            grid-template-columns: 1fr;
         }
+    }
 
-        /* 倒计时样式 */
-        .countdown-section {
-            margin-top: 30px;
-            text-align: center;
-            padding: 20px;
-            background: rgba(40, 40, 60, 0.7);
-            border-radius: 10px;
+    .chart-container {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 15px;
+        padding: 20px;
+        height: 300px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chart-title {
+        font-size: 1.3rem;
+        margin-bottom: 20px;
+        color: #ddd;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .chart-placeholder {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #777;
+        font-size: 1.1rem;
+    }
+
+    .actions-section {
+        grid-column: 1 / -1;
+        text-align: center;
+        margin: 40px 0;
+    }
+
+    .refresh-btn {
+        background: linear-gradient(45deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .refresh-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 25px rgba(138, 43, 226, 0.5);
+    }
+
+    .refresh-btn:active {
+        transform: translateY(0);
+    }
+
+    .loading {
+        display: none;
+        color: var(--primary);
+        margin-top: 20px;
+        font-size: 1rem;
+    }
+
+    footer {
+        text-align: center;
+        padding: 30px 0;
+        color: #777;
+        font-size: 0.9rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .pulse {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(138, 43, 226, 0.7);
         }
-
-        .countdown {
-            font-size: 2.2rem;
-            color: #ff6b6b;
-            margin: 20px 0;
-            text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
+        70% {
+            box-shadow: 0 0 0 15px rgba(138, 43, 226, 0);
         }
-
-        .countdown-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 80px;
+        100% {
+            box-shadow: 0 0 0 0 rgba(138, 43, 226, 0);
         }
+    }
 
-        .countdown-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 10px;
-            border-radius: 5px;
-            min-width: 80px;
-        }
-
-        .countdown-unit {
-            font-size: 1rem;
-            margin-top: 5px;
-            color: #aaa;
-        }
-
-        .countdown-message {
-            font-size: 1.2rem;
-            color: #ffd700;
-            margin-top: 10px;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            padding: 20px;
-            color: #777;
-            font-size: 0.9rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        @media (max-width: 768px) {
-            .content {
-                flex-direction: column;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .reservation-count {
-                font-size: 2rem;
-            }
-
-            .countdown {
-                font-size: 1.8rem;
-                gap: 5px;
-            }
-
-            .countdown-value {
-                font-size: 2rem;
-                min-width: 60px;
-                padding: 8px;
-            }
-
-            .countdown-item {
-                min-width: 60px;
-            }
-        }
+    .glow {
+        text-shadow: 0 0 10px rgba(138, 43, 226, 0.7);
+    }
     </style>
 </head>
 <body>
+<div class="background-animation" id="backgroundAnimation"></div>
+
 <div class="container">
     <header>
-        <h1>唐朝诡事录之长安</h1>
-        <p class="subtitle">悬疑探案剧 · 杨旭文、杨志刚主演</p>
-        <div class="author-info">
-            作者：<a href="https://weibo.com/u/2136166244" class="author-link" target="_blank" style="color: red;">九处</a>
+        <div class="logo">
+            <i class="fas fa-film"></i>
         </div>
+        <h1 class="glow">唐朝诡事录之长安</h1>
+        <p class="subtitle">悬疑探案剧 · 杨旭文、杨志刚主演</p>
     </header>
 
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-fire"></i>
+            </div>
+            <div class="stat-title">热度指数</div>
+            <div class="stat-value" id="heatValue">--</div>
+<!--            <div class="stat-trend trend-up">-->
+<!--                <i class="fas fa-arrow-up"></i>-->
+<!--                <span>2.5% 上升</span>-->
+<!--            </div>-->
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fab fa-weibo"></i>
+            </div>
+            <div class="stat-title">微博指数</div>
+            <div class="stat-value" id="weiboIndexValue">--</div>
+<!--            <div class="stat-trend trend-up">-->
+<!--                <i class="fas fa-arrow-up"></i>-->
+<!--                <span>5.2% 上升</span>-->
+<!--            </div>-->
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-play-circle"></i>
+            </div>
+            <div class="stat-title">实时播放量</div>
+            <div class="stat-value" id="ssbflValue">--</div>
+<!--            <div class="stat-trend trend-down">-->
+<!--                <i class="fas fa-arrow-down"></i>-->
+<!--                <span>1.8% 下降</span>-->
+<!--            </div>-->
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <img src="https://img1.doubanio.com/favicon.ico" alt="豆瓣" style="width: 2.5rem; height: 2.5rem;">
+            </div>
+            <div class="stat-title">豆瓣评分</div>
+            <div class="stat-value" id="rating-value">--</div>
+            <div class="stat-trend">
+                <span id="review-count">-- 评价</span>
+            </div>
+        </div>
+    </div> <!-- 这个闭合标签是关键 -->
     <div class="content">
         <div class="poster-section">
-            <!-- 使用占位图片 -->
-            <img src="https://s21.ax1x.com/2025/11/06/pZplvdg.webp" alt="唐朝诡事录之长安海报"  width='400' height='560' viewBox='0 0 400 560'%3E%3Crect fill='%23333' width='400' height='560'/%3E%3Ctext fill='%23fff' font-family='sans-serif' font-size='30' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3E唐朝诡事录之长安%3C/text%3E%3C/svg%3E" alt="唐朝诡事录之长安海报" class="poster">
+            <img src="https://s21.ax1x.com/2025/11/06/pZplvdg.webp" alt="唐朝诡事录之长安海报" class="poster">
         </div>
 
         <div class="info-section">
-            <h2>剧集信息</h2>
+            <h2 class="section-title">
+                <i class="fas fa-info-circle"></i>
+                剧集信息
+            </h2>
 
-            <div class="info-item">
-                <span class="info-label">剧名：</span>
-                <span>唐朝诡事录之长安</span>
-            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">剧名：</span>
+                    <span>唐朝诡事录之长安</span>
+                </div>
 
-            <div class="info-item">
-                <span class="info-label">主演：</span>
-                <span>杨旭文、杨志刚</span>
-            </div>
+                <div class="info-item">
+                    <span class="info-label">主演：</span>
+                    <span>杨旭文、杨志刚</span>
+                </div>
 
-            <div class="info-item">
-                <span class="info-label">类型：</span>
-                <span>古装、悬疑、探案</span>
-            </div>
+                <div class="info-item">
+                    <span class="info-label">类型：</span>
+                    <span>古装、悬疑、探案</span>
+                </div>
 
-            <div class="info-item">
-                <span class="info-label">简介：</span>
-                <span>本剧延续《唐朝诡事录》系列，讲述长安城中发生的一系列离奇案件，主角们抽丝剥茧，揭开隐藏在繁华盛世背后的惊天秘密。</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">热度：</span>
-                <span class="heat-value" id="heatValue">--</span>
-            </div>
-            <!-- 在 info-section 内添加更新信息部分 -->
-            <div class="info-item">
-                <span class="info-label">更新时间：</span>
-                <span id="updateNotification">--</span>
+                <div class="info-item">
+                    <span class="info-label">简介：</span>
+                    <span>本剧延续《唐朝诡事录》系列，讲述长安城中发生的一系列离奇案件，主角们抽丝剥茧，揭开隐藏在繁华盛世背后的惊天秘密。</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">更新时间：</span>
+                    <span id="updateNotification">--</span>
+                </div>
             </div>
 
             <div class="info-item">
                 <span class="info-label">更新进度：</span>
                 <span id="updateStatus">--</span>
             </div>
-            <div class="info-item">
-                <div class="info-item">
-                    <span class="info-label ">微博指数：</span>
-                    <span id="weiboIndexValue" style="color: #ff6b6b;">--</span></div>
-                <div class="info-item">
-                    <div class="info-item">
-                        <span class="info-label ">实时播放量：</span>
-                        <span id="ssbflValue" style="color: #ff6b6b;">--</span></div>
-<!--            <div class="info-item">-->
-<!--                <span class="info-label">更新提示：</span>-->
-<!--                <span id="extraTip">&#45;&#45;</span>-->
-<!--            </div>-->
-<!--            <div class="countdown-section">-->
-<!--                <h2>距离上线时间</h2>-->
-<!--                <div class="countdown" id="countdown">-->
-<!--                    <div class="countdown-item">-->
-<!--                        <div class="countdown-value" id="days">00</div>-->
-<!--                        <div class="countdown-unit">天</div>-->
-<!--                    </div>-->
-<!--                    <div class="countdown-item">-->
-<!--                        <div class="countdown-value" id="hours">00</div>-->
-<!--                        <div class="countdown-unit">时</div>-->
-<!--                    </div>-->
-<!--                    <div class="countdown-item">-->
-<!--                        <div class="countdown-value" id="minutes">00</div>-->
-<!--                        <div class="countdown-unit">分</div>-->
-<!--                    </div>-->
-<!--                    <div class="countdown-item">-->
-<!--                        <div class="countdown-value" id="seconds">00</div>-->
-<!--                        <div class="countdown-unit">秒</div>-->
-<!--                    </div>-->
+
+<!--                <div class="progress-bar">-->
+                <!--                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>-->
+                <!--                </div>-->
+    </div>
+
+<!--    <div class="charts-section">-->
+<!--        <h2 class="section-title">-->
+<!--            <i class="fas fa-chart-line"></i>-->
+<!--            数据趋势-->
+<!--        </h2>-->
+
+<!--        <div class="chart-grid">-->
+<!--            <div class="chart-container">-->
+<!--                <h3 class="chart-title">-->
+<!--                    <i class="fas fa-fire"></i>-->
+<!--                    热度变化趋势-->
+<!--                </h3>-->
+<!--                <div class="chart-placeholder">-->
+<!--                    <i class="fas fa-chart-bar"></i>-->
+<!--                    &nbsp;热度趋势图表-->
 <!--                </div>-->
-<!--                <div class="countdown-message" id="countdownMessage">2025年11月8日中午12:00上线</div>-->
 <!--            </div>-->
 
-<!--            <div class="reservation-section">-->
-<!--                <h2>预约人数</h2>-->
-<!--                <div class="reservation-count" id="reservationCount">&#45;&#45;</div>-->
-<!--                <button class="refresh-btn" id="refreshBtn">刷新数据</button>-->
-<!--                <div class="loading" id="loading">正在更新数据...</div>-->
-<!--                <div class="error-message" id="errorMessage"></div>-->
-<!--                <div class="update-time" id="updateTime">最后更新: &#45;&#45;</div>-->
+<!--            <div class="chart-container">-->
+<!--                <h3 class="chart-title">-->
+<!--                    <i class="fas fa-users"></i>-->
+<!--                    观众评分分布-->
+<!--                </h3>-->
+<!--                <div class="chart-placeholder">-->
+<!--                    <i class="fas fa-chart-pie"></i>-->
+<!--                    &nbsp;评分分布图表-->
+<!--                </div>-->
 <!--            </div>-->
 <!--        </div>-->
 <!--    </div>-->
-            <!-- 豆瓣评分信息 -->
-            <div class="info-item">
-                <span class="info-label">评价人数：</span>
-                <span id="review-count">--</span>
+
+
+        <!-- 将最后更新时间的div移动到正确位置 -->
+        <div class="actions-section">
+            <button class="refresh-btn pulse" id="refreshAllBtn">
+                <i class="fas fa-sync-alt"></i>
+                刷新所有数据
+            </button>
+            <div class="loading" id="loadingAll">
+                <i class="fas fa-spinner fa-spin"></i>
+                正在更新数据...
             </div>
-
-            <div class="info-item">
-                <span class="info-label">豆瓣评分：</span>
-                <span id="rating-value">--</span>
+            <!-- 将最后更新时间显示移动到这里 -->
+            <div class="last-update" id="lastUpdate" style="color: #777; font-size: 0.9rem; margin-top: 10px; text-align: center;">
+                <!-- 最后更新时间将在这里显示 -->
             </div>
+        </div>
 
-            <!-- 豆瓣评分刷新按钮 -->
-            <div class="reservation-section" style="margin-top: 20px; background: rgba(40, 40, 60, 0.7);">
-                <button class="refresh-btn" id="doubanRefreshBtn">刷新豆瓣评分</button>
-                <div class="loading" id="doubanLoading" style="display: none; margin-top: 15px;">正在更新数据...</div>
-                <div class="error-message" id="doubanErrorMessage" style="display: none; margin-top: 15px;"></div>
-                <div class="update-time" id="doubanUpdateTime" style="margin-top: 15px;">最后更新: --</div>
-            </div>
+        <!-- 在<footer>外部添加一个独立的<div>容器 -->
 
+    <div class="footer-wrapper"> <!-- 新增包装容器 -->
+        <footer>
+            <p>数据来源：电视剧预约平台 | 本页面仅用于演示</p>
+            <p>© 2025 电视剧数据看板 - 所有数据实时更新</p>
+        </footer>
+    </div>
 
-            <footer>
-        <p>数据来源：电视剧预约平台 | 本页面仅用于演示</p>
-    </footer>
-</div>
+<script>        // 创建背景动画元素
+function createBackgroundAnimation() {
+    const container = document.getElementById('backgroundAnimation');
+    for (let i = 0; i < 15; i++) {
+        const el = document.createElement('div');
+        const size = Math.random() * 100 + 50;
+        el.style.width = `${size}px`;
+        el.style.height = `${size}px`;
+        el.style.left = `${Math.random() * 100}%`;
+        el.style.top = `${Math.random() * 100}%`;
+        el.style.animationDuration = `${Math.random() * 20 + 10}s`;
+        el.style.animationDelay = `${Math.random() * 5}s`;
+        container.appendChild(el);
+    }
+}
 
+// 在页面加载时获取所有数据的函数中添加最后更新时间显示
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-        // 热度API接口地址
-        const heatApiUrl = 'https://mesh.if.iqiyi.com/tvg/v2/lw/base_info?entity_id=2628396673367100&device_id=2sjzaktrme4artvvrxgtloka75hrqjex&auth_cookie=7cqpm2Zbm23SeWdDm3l5qCbq6IgUf95kZ4SVQplWXl7SjqIgdpWKiqD0Wm1JYYJqdtIBx091&user_id=1097201185&vip_type=1&vip_status=1&conduit_id=&pcv=13.111.23635&app_version=13.111.23635&ext=&app_mode=standard&scale=125&timestamp=1762501117503&src=pca_tvg&os=&ad_ext=%7B%22r%22%3A%222.6.4-ares6-pure%22%7D&sign=239D2E523677EC7FFFE1C2577E62E1EB';
+// 替换整个 DOMContentLoaded 事件处理函数
+document.addEventListener('DOMContentLoaded', function() {
+    createBackgroundAnimation();
 
-        // 格式化数字，添加千位分隔符
-        function formatNumber(num) {
+    // 热度API接口地址
+    const heatApiUrl = 'https://mesh.if.iqiyi.com/tvg/v2/lw/base_info?entity_id=2628396673367100&device_id=2sjzaktrme4artvvrxgtloka75hrqjex&auth_cookie=7cqpm2Zbm23SeWdDm3l5qCbq6IgUf95kZ4SVQplWXl7SjqIgdpWKiqD0Wm1JYYJqdtIBx091&user_id=1097201185&vip_type=1&vip_status=1&conduit_id=&pcv=13.111.23635&app_version=13.111.23635&ext=&app_mode=standard&scale=125&timestamp=1762501117503&src=pca_tvg&os=&ad_ext=%7B%22r%22%3A%222.6.4-ares6-pure%22%7D&sign=239D2E523677EC7FFFE1C2577E62E1EB';
+
+    // 格式化数字，添加千位分隔符
+    function formatNumber(num) {
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
 
-        // 获取热度数据
-        async function fetchHeatData() {
+    // 获取热度数据
+    async function fetchHeatData() {
         try {
-        const response = await fetch(heatApiUrl);
+            const response = await fetch(heatApiUrl);
 
-        if (!response.ok) {
-        throw new Error(`HTTP错误! 状态: ${response.status}`);
-    }
-
-        const result = await response.json();
-        console.log('API返回数据:', result);
-
-        // 更严格的条件检查
-        if (result &&
-        result.data &&
-        result.data.base_data) {
-
-        // 处理热度值
-        if (typeof result.data.base_data.heat === 'number') {
-        const heat = result.data.base_data.heat;
-        const heatValueElement = document.getElementById('heatValue');
-        heatValueElement.textContent = formatNumber(heat);
-        heatValueElement.style.color = '#ff6b6b';
-    }
-
-        // 处理更新信息
-        if (result.data.base_data.update_info) {
-        const updateInfo = result.data.base_data.update_info;
-
-        // 更新时间
-        if (updateInfo.update_notification) {
-        document.getElementById('updateNotification').textContent = updateInfo.update_notification;
-    }
-
-        // 更新进度
-        if (updateInfo.update_status) {
-        document.getElementById('updateStatus').textContent = updateInfo.update_status;
-    }
-
-    //     // 更新提示
-    //     if (updateInfo.extra_tip) {
-    //     document.getElementById('extraTip').textContent = updateInfo.extra_tip;
-    // }
-    }
-    } else {
-        throw new Error('API返回数据格式不正确或热度值不存在');
-    }
-    } catch (error) {
-        console.error('获取热度数据失败:', error);
-        const heatValueElement = document.getElementById('heatValue');
-        heatValueElement.textContent = '--';
-    }
-    }
-            // 使用JSONP获取豆瓣评分数据
-            function fetchDoubanRating() {
-                try {
-                    // 创建script标签实现JSONP
-                    const script = document.createElement('script');
-                    const callbackName = 'doubanCallback_' + Date.now();
-
-                    window[callbackName] = function(data) {
-                        // 显示评价人数和评分
-                        document.getElementById('review-count').textContent = data.rating.count.toLocaleString();
-                        document.getElementById('rating-value').textContent = data.rating.value;
-
-                        // 更新最后更新时间
-                        const now = new Date();
-                        const timeString = now.toLocaleString('zh-CN', {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit',
-                            hour12: false
-                        }).replace(/\//g, '/').replace(',', '');
-                        document.getElementById('doubanUpdateTime').textContent = `最后更新: ${timeString}`;
-
-                        // 清理
-                        document.head.removeChild(script);
-                        delete window[callbackName];
-                    };
-
-                    script.src = `https://m.douban.com/rexxar/api/v2/tv/36318037?ck=jq_a&for_mobile=1&callback=${callbackName}`;
-                    document.head.appendChild(script);
-                } catch (error) {
-                    console.error('获取豆瓣评分失败:', error);
-                    document.getElementById('review-count').textContent = '--';
-                    document.getElementById('rating-value').textContent = '--';
-                    // 即使出错也更新时间
-                    const now = new Date();
-                    const timeString = now.toLocaleString('zh-CN', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                        hour12: false
-                    }).replace(/\//g, '/').replace(',', '');
-                    document.getElementById('doubanUpdateTime').textContent = `最后更新: ${timeString}`;
-                }
+            if (!response.ok) {
+                throw new Error(`HTTP错误! 状态: ${response.status}`);
             }
-// 豆瓣评分刷新按钮事件监听
-            document.getElementById('doubanRefreshBtn').addEventListener('click', function() {
-                refreshDoubanRating();
-            });
 
-// 刷新豆瓣评分数据函数
-            // 刷新豆瓣评分数据函数
-            async function refreshDoubanRating() {
-                const refreshBtn = document.getElementById('doubanRefreshBtn');
-                const loadingElement = document.getElementById('doubanLoading');
-                const errorMessageElement = document.getElementById('doubanErrorMessage');
-                const updateTimeElement = document.getElementById('doubanUpdateTime');
-                const reviewCountElement = document.getElementById('review-count');
-                const ratingValueElement = document.getElementById('rating-value');
+            const result = await response.json();
+            console.log('API返回数据:', result);
 
-                // 添加按钮点击动画
-                refreshBtn.classList.add('btn-click');
-                setTimeout(() => {
-                    refreshBtn.classList.remove('btn-click');
-                }, 300);
-
-                // 显示加载状态 - 使用更明确的显示方式
-                refreshBtn.disabled = true;
-                loadingElement.style.display = 'block';
-                loadingElement.style.opacity = '1';
-                errorMessageElement.style.display = 'none';
-
-                try {
-                    await fetchDoubanRating();
-                    // 更新最后更新时间
-                    const now = new Date();
-                    const timeString = now.toLocaleString('zh-CN', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                        hour12: false
-                    }).replace(/\//g, '/').replace(',', '');
-                    updateTimeElement.textContent = `最后更新: ${timeString}`;
-
-                    // 添加数据更新动画效果
-                    reviewCountElement.classList.add('value-update');
-                    ratingValueElement.classList.add('value-update');
-
-                    // 动画结束后移除类名
-                    setTimeout(() => {
-                        reviewCountElement.classList.remove('value-update');
-                        ratingValueElement.classList.remove('value-update');
-                    }, 900);
-                } catch (error) {
-                    console.error('刷新豆瓣评分失败:', error);
-                    errorMessageElement.textContent = '刷新失败，请稍后重试';
-                    errorMessageElement.style.display = 'block';
-                } finally {
-                    // 恢复按钮状态 - 确保动画隐藏
-                    setTimeout(() => {
-                        refreshBtn.disabled = false;
-                        loadingElement.style.display = 'none';
-                        loadingElement.style.opacity = '0';
-                    }, 300); // 添加轻微延迟确保用户能看到加载状态
+            if (result && result.data && result.data.base_data) {
+                // 处理热度值
+                if (typeof result.data.base_data.heat === 'number') {
+                    const heat = result.data.base_data.heat;
+                    const heatValueElement = document.getElementById('heatValue');
+                    heatValueElement.textContent = formatNumber(heat);
                 }
-            }
-            async function fetchWeiboIndexData() {
-                const weiboIndexElement = document.getElementById('weiboIndexValue');
 
-                try {
-                    const proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
-                    const targetUrl = encodeURIComponent('https://rprank.tv.weibo.cn/episode/api/detail?current_uid=2136166244&pid=3816&sign=a78cf49de3d6816c6e44005f1d69fa199d8b12fd&program_type=0&ts=1763476203&c=applet&gsid=_2A25EHz2bDeRxGeRP6FQQ9ijOzziIHXVkjTZTrDV6PUJbkdAbLUr3kWpNUCimGh7hwiXD7tNyWKRvUMCrsJ7L3VU_');
+                // 处理更新信息
+                if (result.data.base_data.update_info) {
+                    const updateInfo = result.data.base_data.update_info;
 
-                    const response = await fetch(proxyUrl + targetUrl);
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (data.code === 1000 && data.data && data.data.program) {
-                            // 提取微博指数数据
-                            const weiboScore = data.data.program.score;
-                            weiboIndexElement.textContent = weiboScore;
-                        } else {
-                            throw new Error('Invalid data format');
-                        }
-                    } else {
-                        throw new Error('Failed to fetch Weibo index data');
+                    // 更新时间
+                    if (updateInfo.update_notification) {
+                        document.getElementById('updateNotification').textContent = updateInfo.update_notification;
                     }
-                } catch (error) {
-                    console.error('Error fetching Weibo index data:', error);
-                    weiboIndexElement.textContent = '--';
-                }
-            }
 
-// 获取实时播放量数据
-            async function fetchSSBFLData() {
-                const ssbflElement = document.getElementById('ssbflValue');
-
-                try {
-                    // 使用代理服务器获取数据
-                    const proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
-                    const targetUrl = encodeURIComponent('https://dengtapro.taopiaopiao.com/movie-detail.html?hideTitlebar=true&transparentStatusBar=true&mediaId=1535166&spm=a2o45.b48152885.1.1');
-
-                    const response = await fetch(proxyUrl + targetUrl);
-
-                    if (response.ok) {
-                        const html = await response.text();
-                        // 使用正则表达式提取实时播放量
-                        const ssbflMatch = html.match(/<div\s+class="num\s+num-color">\s*<span>([^<]+)<\/span>\s*<\/div>/);
-
-                        if (ssbflMatch && ssbflMatch[1]) {
-                            ssbflElement.textContent = ssbflMatch[1];
-                        } else {
-                            throw new Error('未找到实时播放量数据');
-                        }
-                    } else {
-                        throw new Error('请求失败');
+                    // 更新进度状态
+                    if (updateInfo.update_status) {
+                        document.getElementById('updateStatus').textContent = updateInfo.update_status;
                     }
-                } catch (error) {
-                    console.error('获取实时播放量失败:', error);
-                    ssbflElement.textContent = '--';
                 }
+            } else {
+                throw new Error('API返回数据格式不正确或热度值不存在');
             }
-// 页面加载时获取实时播放量数据
-            fetchSSBFLData();
+        } catch (error) {
+            console.error('获取热度数据失败:', error);
+            const heatValueElement = document.getElementById('heatValue');
+            heatValueElement.textContent = '--';
+        }
+    }
 
+    // 使用JSONP获取豆瓣评分数据
+    function fetchDoubanRating() {
+        try {
+            // 创建script标签实现JSONP
+            const script = document.createElement('script');
+            const callbackName = 'doubanCallback_' + Date.now();
 
-            // 页面加载时获取热度数据
-        fetchHeatData();
-            fetchWeiboIndexData(); // 添加这一行
-// 每5秒自动刷新一次实时播放量数据
-            setInterval(fetchSSBFLData, 5 * 1000);
-        // 每5秒自动刷新一次热度数据
-        setInterval(fetchHeatData, 5 * 1000);
-        setInterval(fetchWeiboIndexData, 5 * 1000);
+            window[callbackName] = function(data) {
+                // 显示评价人数和评分
+                document.getElementById('review-count').textContent = data.rating.count.toLocaleString() + ' 评价';
+                document.getElementById('rating-value').textContent = data.rating.value;
 
-// 页面加载时获取豆瓣评分数据
-            fetchDoubanRating();
-            // 每30秒自动刷新一次豆瓣评分数据
-            setInterval(() => {
-                const loadingElement = document.getElementById('doubanLoading');
-                const errorMessageElement = document.getElementById('doubanErrorMessage');
+                // 清理
+                document.head.removeChild(script);
+                delete window[callbackName];
+            };
 
-                // 显示加载状态
-                if (loadingElement) {
-                    loadingElement.style.display = 'block';
-                    loadingElement.style.opacity = '1';
+            script.src = `https://m.douban.com/rexxar/api/v2/tv/36318037?ck=jq_a&for_mobile=1&callback=${callbackName}`;
+            document.head.appendChild(script);
+        } catch (error) {
+            console.error('获取豆瓣评分失败:', error);
+            document.getElementById('review-count').textContent = '-- 评价';
+            document.getElementById('rating-value').textContent = '--';
+        }
+    }
+
+    async function fetchWeiboIndexData() {
+        const weiboIndexElement = document.getElementById('weiboIndexValue');
+
+        try {
+            const proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
+            const targetUrl = encodeURIComponent('https://rprank.tv.weibo.cn/episode/api/detail?current_uid=2136166244&pid=3816&sign=a78cf49de3d6816c6e44005f1d69fa199d8b12fd&program_type=0&ts=1763476203&c=applet&gsid=_2A25EHz2bDeRxGeRP6FQQ9ijOzziIHXVkjTZTrDV6PUJbkdAbLUr3kWpNUCimGh7hwiXD7tNyWKRvUMCrsJ7L3VU_');
+
+            const response = await fetch(proxyUrl + targetUrl);
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.code === 1000 && data.data && data.data.program) {
+                    // 提取微博指数数据
+                    const weiboScore = data.data.program.score;
+                    weiboIndexElement.textContent = weiboScore;
+                } else {
+                    throw new Error('Invalid data format');
                 }
-                if (errorMessageElement) {
-                    errorMessageElement.style.display = 'none';
-                }
+            } else {
+                throw new Error('Failed to fetch Weibo index data');
+            }
+        } catch (error) {
+            console.error('Error fetching Weibo index data:', error);
+            weiboIndexElement.textContent = '--';
+        }
+    }
 
-                try {
+    // 获取实时播放量数据
+    async function fetchSSBFLData() {
+        const ssbflElement = document.getElementById('ssbflValue');
+
+        try {
+            // 使用代理服务器获取数据
+            const proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
+            const targetUrl = encodeURIComponent('https://dengtapro.taopiaopiao.com/movie-detail.html?hideTitlebar=true&transparentStatusBar=true&mediaId=1535166&spm=a2o45.b48152885.1.1');
+
+            const response = await fetch(proxyUrl + targetUrl);
+
+            if (response.ok) {
+                const html = await response.text();
+                // 使用正则表达式提取实时播放量
+                const ssbflMatch = html.match(/<div\s+class="num\s+num-color">\s*<span>([^<]+)<\/span>\s*<\/div>/);
+
+                if (ssbflMatch && ssbflMatch[1]) {
+                    ssbflElement.textContent = ssbflMatch[1];
+                } else {
+                    throw new Error('未找到实时播放量数据');
+                }
+            } else {
+                throw new Error('请求失败');
+            }
+        } catch (error) {
+            console.error('获取实时播放量失败:', error);
+            ssbflElement.textContent = '--';
+        }
+    }
+
+    // 新增函数：更新最后更新时间显示
+    function updateLastUpdateTime() {
+        const now = new Date();
+        const timeString = now.toLocaleString('zh-CN', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        document.getElementById('lastUpdate').textContent = `最后更新: ${timeString}`;
+    }
+
+    // 修改 refreshAllData 函数，在数据刷新完成后更新时间显示
+    async function refreshAllData() {
+        const refreshBtn = document.getElementById('refreshAllBtn');
+        const loadingElement = document.getElementById('loadingAll');
+        const lastUpdateElement = document.getElementById('lastUpdate');
+
+        refreshBtn.disabled = true;
+        loadingElement.style.display = 'block';
+        refreshBtn.classList.remove('pulse');
+
+        try {
+            await Promise.all([
+                fetchHeatData(),
+                fetchWeiboIndexData(),
+                fetchSSBFLData(),
+                new Promise(resolve => {
                     fetchDoubanRating();
-                } catch (error) {
-                    console.error('自动刷新豆瓣评分失败:', error);
-                    if (errorMessageElement) {
-                        errorMessageElement.textContent = '自动刷新失败';
-                        errorMessageElement.style.display = 'block';
-                    }
-                }
+                    setTimeout(resolve, 1000);
+                })
+            ]);
 
-                // 由于 fetchDoubanRating 是 JSONP 实现，需要使用定时方式隐藏加载动画
-                setTimeout(() => {
-                    if (loadingElement) {
-                        loadingElement.style.display = 'none';
-                        loadingElement.style.opacity = '0';
-                    }
-                }, 1000); // 2秒后自动隐藏加载动画
-            }, 5 * 1000);   });
+            // 数据刷新成功后更新最后更新时间
+            updateLastUpdateTime();
+        } catch (error) {
+            console.error('刷新数据失败:', error);
+            lastUpdateElement.textContent = '更新失败';
+        } finally {
+            setTimeout(() => {
+                refreshBtn.disabled = false;
+                loadingElement.style.display = 'none';
+                refreshBtn.classList.add('pulse');
+            }, 1000);
+        }
+    }
+
+    // 统一的自动刷新函数
+    async function autoRefreshData() {
+        const loadingElement = document.getElementById('loadingAll');
+        const refreshBtn = document.getElementById('refreshAllBtn');
+
+        // 显示加载动画
+        if (loadingElement) {
+            loadingElement.style.display = 'block';
+        }
+        if (refreshBtn) {
+            refreshBtn.classList.remove('pulse');
+        }
+
+        try {
+            await Promise.all([
+                fetchHeatData(),
+                fetchWeiboIndexData(),
+                fetchSSBFLData()
+            ]);
+
+            // 更新时间显示
+            updateLastUpdateTime();
+        } catch (error) {
+            console.error('自动刷新数据失败:', error);
+        } finally {
+            // 隐藏加载动画
+            setTimeout(() => {
+                if (loadingElement) {
+                    loadingElement.style.display = 'none';
+                }
+                if (refreshBtn) {
+                    refreshBtn.classList.add('pulse');
+                }
+            }, 1000);
+        }
+    }
+
+    // 页面加载时获取所有数据并显示初始更新时间
+    Promise.all([
+        fetchHeatData(),
+        fetchWeiboIndexData(),
+        fetchSSBFLData(),
+        new Promise(resolve => {
+            fetchDoubanRating();
+            setTimeout(resolve, 1000);
+        })
+    ]).then(() => {
+        updateLastUpdateTime();
+    }).catch(error => {
+        console.error('初始数据加载失败:', error);
+        updateLastUpdateTime(); // 即使出错也显示时间
+    });
+
+    // 每3秒自动刷新一次数据（除豆瓣评分外的数据）
+    setInterval(autoRefreshData, 3 * 1000);
+
+    // 每30秒刷新豆瓣评分
+    setInterval(() => {
+        fetchDoubanRating();
+    }, 30 * 1000);
+
+    // 刷新按钮事件
+    document.getElementById('refreshAllBtn').addEventListener('click', refreshAllData);
+});
 </script>
 </body>
 </html>
