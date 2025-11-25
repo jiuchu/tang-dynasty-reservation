@@ -117,7 +117,12 @@
         transition: all 0.4s ease;
         position: relative;
         overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
     }
+
 
     .stat-card::before {
         content: '';
@@ -141,12 +146,18 @@
         background: linear-gradient(45deg, var(--primary), var(--secondary));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
+
+
 
     .stat-title {
         font-size: 1.1rem;
         color: #aaa;
         margin-bottom: 10px;
+        width: 100%;
     }
 
     .stat-value {
@@ -156,12 +167,15 @@
         background: linear-gradient(45deg, var(--light), #ffd700);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        width: 100%;
     }
 
     .stat-trend {
         display: flex;
         align-items: center;
         font-size: 0.9rem;
+        justify-content: center;
+        width: 100%;
     }
 
     .trend-up {
@@ -439,21 +453,31 @@
 <body>
 <div class="background-animation" id="backgroundAnimation"></div>
 
-<div class="container">
-    <header>
-        <div class="logo">
-            <i class="fas fa-film"></i>
+<header>
+    <div class="logo">
+        <i class="fas fa-film"></i>
+    </div>
+    <h1 class="glow">唐朝诡事录之长安</h1>
+    <p class="subtitle">悬疑探案剧 · 杨旭文、杨志刚主演</p>
+    <div class="header-info-container" style="display: flex; justify-content: center; align-items: center; gap: 30px; margin-top: 15px;">
+        <div class="author-info">
+            作者：<a href="https://weibo.com/u/2136166244" class="author-link" target="_blank" style="color: red;">九处</a>
         </div>
-        <h1 class="glow">唐朝诡事录之长安</h1>
-        <p class="subtitle">悬疑探案剧 · 杨旭文、杨志刚主演</p>
-    </header>
+        <div class="reward-info">
+            <a href="https://s21.ax1x.com/2025/11/25/pZAGqL4.jpg" target="_blank" style="text-decoration: none; color: #ffd700;">
+                <i class="fas fa-money-bag"></i> 打赏作者
+            </a>
+        </div>
+    </div>
+</header>
+
 
     <div class="stats-container">
         <div class="stat-card">
             <div class="stat-icon">
                 <i class="fas fa-fire"></i>
             </div>
-            <div class="stat-title">热度指数</div>
+            <div class="stat-title">爱奇艺热度指数</div>
             <div class="stat-value" id="heatValue">--</div>
 <!--            <div class="stat-trend trend-up">-->
 <!--                <i class="fas fa-arrow-up"></i>-->
@@ -477,7 +501,7 @@
             <div class="stat-icon">
                 <i class="fas fa-play-circle"></i>
             </div>
-            <div class="stat-title">实时播放量</div>
+            <div class="stat-title">灯塔今日实时播放量</div>
             <div class="stat-value" id="ssbflValue">--</div>
 <!--            <div class="stat-trend trend-down">-->
 <!--                <i class="fas fa-arrow-down"></i>-->
@@ -526,7 +550,11 @@
 
                 <div class="info-item">
                     <span class="info-label">简介：</span>
-                    <span>本剧延续《唐朝诡事录》系列，讲述长安城中发生的一系列离奇案件，主角们抽丝剥茧，揭开隐藏在繁华盛世背后的惊天秘密。</span>
+                    <span>先天二年夏秋之交，天子虽已登基，但大长公主势力更盛，长安局势阴晴难定。卢凌风和苏无名，奉命带着由裴喜君、费鸡师、樱桃和薛环组成的探案小队，以护送康国所献金桃的名义重返长安。</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">播出平台：</span>
+                    <span>北京卫视、爱奇艺</span>
                 </div>
 
                 <div class="info-item">
@@ -707,7 +735,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             const proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
-            const targetUrl = encodeURIComponent('https://rprank.tv.weibo.cn/episode/api/detail?current_uid=2136166244&pid=3816&sign=a78cf49de3d6816c6e44005f1d69fa199d8b12fd&program_type=0&ts=1763476203&c=applet&gsid=_2A25EHz2bDeRxGeRP6FQQ9ijOzziIHXVkjTZTrDV6PUJbkdAbLUr3kWpNUCimGh7hwiXD7tNyWKRvUMCrsJ7L3VU_');
+            const targetUrl = encodeURIComponent('https://rprank.tv.weibo.cn/episode/api/detail?current_uid=5311346698&pid=3816&sign=a25339a54a2410cf534758007bdf4bb2c4ced00d&program_type=0&ts=1764065761&c=applet&gsid=_2A25EIQ5VDeRxGeNN6lMS9CjKwjSIHXVldwadrDV6PUJbkdAbLVSskWpNScKCqj8OuNbCjRel3mMjnfZFjkk4TZY8');
 
             const response = await fetch(proxyUrl + targetUrl);
 
