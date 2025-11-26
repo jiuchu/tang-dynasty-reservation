@@ -770,13 +770,22 @@
 
                 if (response.ok) {
                     const html = await response.text();
-                    // 使用正则表达式提取实时播放量
-                    const ssbflMatch = html.match(/<div\s+class="num\s+num-color">\s*<span>([^<]+)<\/span>\s*<\/div>/);
 
-                    if (ssbflMatch && ssbflMatch[1]) {
-                        ssbflElement.textContent = ssbflMatch[1];
+                    // 首先检查是否存在"今日实时播放量"标题
+                    const hasTodayTitle = html.includes('>今日实时播放量<');
+
+                    if (hasTodayTitle) {
+                        // 使用正则表达式提取实时播放量
+                        const ssbflMatch = html.match(/<div\s+class="num\s+num-color">\s*<span>([^<]+)<\/span>\s*<\/div>/);
+
+                        if (ssbflMatch && ssbflMatch[1]) {
+                            ssbflElement.textContent = ssbflMatch[1];
+                        } else {
+                            throw new Error('未找到实时播放量数据');
+                        }
                     } else {
-                        throw new Error('未找到实时播放量数据');
+                        // 如果没有今日实时播放量标题，则显示"--"表示数据尚未更新
+                        ssbflElement.textContent = '--';
                     }
                 } else {
                     throw new Error('请求失败');
