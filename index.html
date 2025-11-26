@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>大生意人 - 数据看板</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://fastly.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>        :root {
         --primary: #8a2be2;
         --secondary: #ff6b6b;
@@ -123,7 +124,6 @@
         text-align: center;
     }
 
-
     .stat-card::before {
         content: '';
         position: absolute;
@@ -150,8 +150,6 @@
         justify-content: center;
         align-items: center;
     }
-
-
 
     .stat-title {
         font-size: 1.1rem;
@@ -222,7 +220,7 @@
     }
 
     .poster:hover {
-        transform: scale(1.5); /* 放大1.5倍 */
+        transform: scale(1.2);
     }
 
     .info-section {
@@ -298,6 +296,7 @@
         max-width: 1400px;
         margin: 0 auto;
     }
+
     .progress-bar {
         height: 15px;
         background: rgba(255, 255, 255, 0.1);
@@ -471,7 +470,6 @@
     </div>
 </header>
 
-
 <div class="stats-container">
     <div class="stat-card">
         <div class="stat-icon">
@@ -479,10 +477,6 @@
         </div>
         <div class="stat-title">爱奇艺热度指数</div>
         <div class="stat-value" id="heatValue">--</div>
-        <!--            <div class="stat-trend trend-up">-->
-        <!--                <i class="fas fa-arrow-up"></i>-->
-        <!--                <span>2.5% 上升</span>-->
-        <!--            </div>-->
     </div>
 
     <div class="stat-card">
@@ -491,10 +485,6 @@
         </div>
         <div class="stat-title">微博指数</div>
         <div class="stat-value" id="weiboIndexValue">--</div>
-        <!--            <div class="stat-trend trend-up">-->
-        <!--                <i class="fas fa-arrow-up"></i>-->
-        <!--                <span>5.2% 上升</span>-->
-        <!--            </div>-->
     </div>
 
     <div class="stat-card">
@@ -503,12 +493,7 @@
         </div>
         <div class="stat-title">灯塔今日实时播放量</div>
         <div class="stat-value" id="ssbflValue">--</div>
-        <!--            <div class="stat-trend trend-down">-->
-        <!--                <i class="fas fa-arrow-down"></i>-->
-        <!--                <span>1.8% 下降</span>-->
-        <!--            </div>-->
     </div>
-
 
     <div class="stat-card">
         <div class="stat-icon">
@@ -520,29 +505,25 @@
             <span id="review-count">-- 评价</span>
         </div>
     </div>
-<!--    // 在现有的 stats-container 中添加新的统计卡片-->
+
     <div class="stat-card">
         <div class="stat-icon">
             <i class="fas fa-tv"></i>
         </div>
         <div class="stat-title">酷云直播收视率</div>
         <div class="stat-value" id="kuyunRatingValue">--</div>
-<!--        <div class="stat-trend">-->
-<!--            <span id="kuyunUpdateTime">&#45;&#45;</span>-->
-<!--        </div>-->
     </div>
-</div> <!-- 这个闭合标签是关键 -->
+</div>
+
 <div class="content">
     <div class="poster-section">
         <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
-            <!-- 原始海报 -->
             <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; align-items: center;">
                 <h3 style="margin-bottom: 15px; color: #ffd700;">剧集海报</h3>
                 <img src="https://s21.ax1x.com/2025/11/25/pZAJwXF.jpg"
                      alt="大生意人海报" class="poster">
             </div>
 
-            <!-- 追剧日历 -->
             <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; align-items: center;">
                 <h3 style="margin-bottom: 15px; color: #ffd700;">追剧日历</h3>
                 <img src="https://api.codetabs.com/v1/proxy?quest=https://pic0.iqiyipic.com/lequ/20251125/754bc22f48a44fdf9196787bba500f6c.jpg"
@@ -592,72 +573,56 @@
             <span class="info-label">更新进度：</span>
             <span id="updateStatus">--</span>
         </div>
-
-        <!--                <div class="progress-bar">-->
-        <!--                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>-->
-        <!--                </div>-->
     </div>
+</div>
 
-    <!--    <div class="charts-section">-->
-    <!--        <h2 class="section-title">-->
-    <!--            <i class="fas fa-chart-line"></i>-->
-    <!--            数据趋势-->
-    <!--        </h2>-->
+<div class="charts-section">
+    <h2 class="section-title">
+        <i class="fas fa-chart-line"></i>
+        热度趋势对比
+    </h2>
 
-    <!--        <div class="chart-grid">-->
-    <!--            <div class="chart-container">-->
-    <!--                <h3 class="chart-title">-->
-    <!--                    <i class="fas fa-fire"></i>-->
-    <!--                    热度变化趋势-->
-    <!--                </h3>-->
-    <!--                <div class="chart-placeholder">-->
-    <!--                    <i class="fas fa-chart-bar"></i>-->
-    <!--                    &nbsp;热度趋势图表-->
-    <!--                </div>-->
-    <!--            </div>-->
-
-    <!--            <div class="chart-container">-->
-    <!--                <h3 class="chart-title">-->
-    <!--                    <i class="fas fa-users"></i>-->
-    <!--                    观众评分分布-->
-    <!--                </h3>-->
-    <!--                <div class="chart-placeholder">-->
-    <!--                    <i class="fas fa-chart-pie"></i>-->
-    <!--                    &nbsp;评分分布图表-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </div>-->
-
-
-    <!-- 将最后更新时间的div移动到正确位置 -->
-    <div class="actions-section">
-        <button class="refresh-btn pulse" id="refreshAllBtn">
-            <i class="fas fa-sync-alt"></i>
-            刷新所有数据
-        </button>
-        <div class="loading" id="loadingAll">
-            <i class="fas fa-spinner fa-spin"></i>
-            正在更新数据...
+    <div class="chart-grid">
+        <div class="chart-container">
+            <h3 class="chart-title">
+                <i class="fas fa-fire"></i>
+                昨日vs今日热度对比
+            </h3>
+            <canvas id="heatChart"></canvas>
         </div>
-        <!-- 将最后更新时间显示移动到这里 -->
-        <div class="last-update" id="lastUpdate" style="color: #777; font-size: 0.9rem; margin-top: 10px; text-align: center;">
-            <!-- 最后更新时间将在这里显示 -->
+
+        <div class="chart-container">
+            <h3 class="chart-title">
+                <i class="fas fa-chart-bar"></i>
+                热度变化分析
+            </h3>
+            <canvas id="analysisChart"></canvas>
         </div>
     </div>
+</div>
 
-    <!-- 在<footer>外部添加一个独立的<div>容器 -->
-
-    <div class="footer-wrapper"> <!-- 新增包装容器 -->
-        <footer>
-            <p>数据来源：电视剧预约平台 | 本页面仅用于演示</p>
-            <p>© 2025 电视剧数据看板 - 所有数据实时更新</p>
-        </footer>
+<div class="actions-section">
+    <button class="refresh-btn pulse" id="refreshAllBtn">
+        <i class="fas fa-sync-alt"></i>
+        刷新所有数据
+    </button>
+    <div class="loading" id="loadingAll">
+        <i class="fas fa-spinner fa-spin"></i>
+        正在更新数据...
     </div>
+    <div class="last-update" id="lastUpdate" style="color: #777; font-size: 0.9rem; margin-top: 10px; text-align: center;">
+    </div>
+</div>
 
-    <script>
+<div class="footer-wrapper">
+    <footer>
+        <p>数据来源：电视剧预约平台 | 本页面仅用于演示</p>
+        <p>© 2025 电视剧数据看板 - 所有数据实时更新</p>
+    </footer>
+</div>
 
-        // 创建背景动画元素
+<script>
+    // 创建背景动画元素
     function createBackgroundAnimation() {
         const container = document.getElementById('backgroundAnimation');
         for (let i = 0; i < 15; i++) {
@@ -672,17 +637,12 @@
             container.appendChild(el);
         }
     }
+
     // 添加获取酷云直播收视率数据的函数
-
-    // 修改获取酷云直播收视率数据的函数，使用代理服务器
-
-    // 修改获取酷云直播收视率数据的函数
     async function fetchKuyunRatingData() {
         const kuyunElement = document.getElementById('kuyunRatingValue');
-        // 移除对 updateTimeElement 的引用
 
         try {
-            // 使用新接口URL
             const proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
             const targetUrl = encodeURIComponent('https://www.ky.live/api/same_type/real_epgs?caid=1574644&tvid=13&area=-1');
             const apiUrl = proxyUrl + targetUrl;
@@ -692,18 +652,13 @@
             if (response.ok) {
                 const data = await response.json();
                 if (data.status && data.data && Array.isArray(data.data)) {
-                    // 查找CCTV-8频道且节目名为"大生意人"的数据
                     const targetData = data.data.find(item =>
                         item.tvn === "CCTV-8" && item.epg.includes("大生意人")
                     );
 
                     if (targetData) {
-                        // 转换为百分比格式（保留4位小数）
                         const percentage = (targetData.r * 100).toFixed(4) + '%';
                         kuyunElement.textContent = percentage;
-
-                        // 移除时间显示代码
-                        // updateTimeElement.textContent = targetData.time;
                     } else {
                         throw new Error('未找到CCTV-8《大生意人》收视率数据');
                     }
@@ -716,247 +671,461 @@
         } catch (error) {
             console.error('获取酷云收视率数据失败:', error);
             kuyunElement.textContent = '--';
-            // 移除时间显示代码
-            // updateTimeElement.textContent = '获取失败';
         }
     }
 
-    // 在页面加载时获取所有数据的函数中添加最后更新时间显示
+    // 格式化数字，添加千位分隔符
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    // 获取热度数据
+    async function fetchHeatData() {
+        // 热度API接口地址
+        const heatApiUrl = 'https://mesh.if.iqiyi.com/tvg/v2/lw/base_info?entity_id=6381730674829700&device_id=2sjzaktrme4artvvrxgtloka75hrqjex&auth_cookie=56IKoNi20I7iHRA2KZds0gBjiZm3hHdByxOzQF6vazVxfgEkipWKm22X8pQ8Auej0lBA41&user_id=1097201185&vip_type=-1&vip_status=3&conduit_id=&pcv=13.114.23859&app_version=13.114.23859&ext=&app_mode=standard&scale=125&timestamp=1764069803787&src=pca_tvg&os=&ad_ext=%7B%22r%22%3A%222.9.2-ares6-pure%22%7D&sign=280BD2A1ED8D9DF545E34646577CDD3D';
+
+        try {
+            const response = await fetch(heatApiUrl);
+
+            if (!response.ok) {
+                throw new Error(`HTTP错误! 状态: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('API返回数据:', result);
+
+            if (result && result.data && result.data.base_data) {
+                // 处理热度值
+                if (typeof result.data.base_data.heat === 'number') {
+                    const heat = result.data.base_data.heat;
+                    const heatValueElement = document.getElementById('heatValue');
+                    heatValueElement.textContent = formatNumber(heat);
+                }
+
+                // 处理更新信息
+                if (result.data.base_data.update_info) {
+                    const updateInfo = result.data.base_data.update_info;
+
+                    // 更新时间
+                    if (updateInfo.update_notification) {
+                        document.getElementById('updateNotification').textContent = updateInfo.update_notification;
+                    }
+
+                    // 更新进度状态
+                    if (updateInfo.update_status) {
+                        document.getElementById('updateStatus').textContent = updateInfo.update_status;
+                    }
+                }
+            } else {
+                throw new Error('API返回数据格式不正确或热度值不存在');
+            }
+        } catch (error) {
+            console.error('获取热度数据失败:', error);
+            const heatValueElement = document.getElementById('heatValue');
+            heatValueElement.textContent = '--';
+        }
+    }
+
+    // 使用JSONP获取豆瓣评分数据
+    function fetchDoubanRating() {
+        try {
+            // 创建script标签实现JSONP
+            const script = document.createElement('script');
+            const callbackName = 'doubanCallback_' + Date.now();
+
+            window[callbackName] = function(data) {
+                // 显示评价人数和评分
+                document.getElementById('review-count').textContent = data.rating.count.toLocaleString() + ' 评价';
+                document.getElementById('rating-value').textContent = data.rating.value;
+
+                // 清理
+                document.head.removeChild(script);
+                delete window[callbackName];
+            };
+
+            script.src = `https://m.douban.com/rexxar/api/v2/tv/36721163?ck=jq_a&for_mobile=1&callback=${callbackName}`;
+            document.head.appendChild(script);
+        } catch (error) {
+            console.error('获取豆瓣评分失败:', error);
+            document.getElementById('review-count').textContent = '-- 评价';
+            document.getElementById('rating-value').textContent = '--';
+        }
+    }
+
+    async function fetchWeiboIndexData() {
+        const weiboIndexElement = document.getElementById('weiboIndexValue');
+
+        try {
+            const proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
+            const targetUrl = encodeURIComponent('https://rprank.tv.weibo.cn/episode/api/detail?current_uid=5311346698&pid=3281&sign=b32c6b38c121e6c9dd8f4be10914844dd6dda3be&program_type=0&ts=1764064832&c=applet&gsid=_2A25EIQ5VDeRxGeNN6lMS9CjKwjSIHXVldwadrDV6PUJbkdAbLVSskWpNScKCqj8OuNbCjRel3mMjnfZFjkk4TZY8');
+
+            const response = await fetch(proxyUrl + targetUrl);
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.code === 1000 && data.data && data.data.program) {
+                    // 提取微博指数数据
+                    const weiboScore = data.data.program.score;
+                    weiboIndexElement.textContent = weiboScore;
+                } else {
+                    throw new Error('Invalid data format');
+                }
+            } else {
+                throw new Error('Failed to fetch Weibo index data');
+            }
+        } catch (error) {
+            console.error('Error fetching Weibo index data:', error);
+            weiboIndexElement.textContent = '--';
+        }
+    }
+
+    // 获取实时播放量数据
+    async function fetchSSBFLData() {
+        const ssbflElement = document.getElementById('ssbflValue');
+
+        try {
+            // 使用代理服务器获取数据
+            const proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
+            const targetUrl = encodeURIComponent('https://dengtapro.taopiaopiao.com/movie-detail.html?hideTitlebar=true&transparentStatusBar=true&mediaId=1430081');
+
+            const response = await fetch(proxyUrl + targetUrl);
+
+            if (response.ok) {
+                const html = await response.text();
+                // 使用正则表达式提取实时播放量
+                const ssbflMatch = html.match(/<div\s+class="num\s+num-color">\s*<span>([^<]+)<\/span>\s*<\/div>/);
+
+                if (ssbflMatch && ssbflMatch[1]) {
+                    ssbflElement.textContent = ssbflMatch[1];
+                } else {
+                    throw new Error('未找到实时播放量数据');
+                }
+            } else {
+                throw new Error('请求失败');
+            }
+        } catch (error) {
+            console.error('获取实时播放量失败:', error);
+            ssbflElement.textContent = '--';
+        }
+    }
+
+    // 新增函数：更新最后更新时间显示
+    function updateLastUpdateTime() {
+        const now = new Date();
+        const timeString = now.toLocaleString('zh-CN', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        document.getElementById('lastUpdate').textContent = `最后更新: ${timeString}`;
+    }
+
+    // 初始化图表
+    function initCharts() {
+        const heatCtx = document.getElementById('heatChart').getContext('2d');
+        const analysisCtx = document.getElementById('analysisChart').getContext('2d');
+
+        // 生成时间标签(0点到24点，每3小时一个点)
+        const timeLabels = [];
+        for (let i = 0; i <= 24; i += 3) {
+            timeLabels.push(`${i.toString().padStart(2, '0')}:00`);
+        }
+
+        // 创建图表但先使用空数据
+        window.heatChart = new Chart(heatCtx, {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [
+                    {
+                        label: '昨日热度',
+                        data: [],
+                        borderColor: '#ff6b6b',
+                        backgroundColor: 'rgba(255, 107, 107, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: '今日热度',
+                        data: [],
+                        borderColor: '#8a2be2',
+                        backgroundColor: 'rgba(138, 43, 226, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        min: 1000,
+                        ticks: {
+                            stepSize: 1000,
+                            callback: function(value) {
+                                return value.toLocaleString();
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#f8f9fa'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 12, 41, 0.9)',
+                        titleColor: '#ffd700',
+                        bodyColor: '#f8f9fa',
+                        borderColor: '#8a2be2',
+                        borderWidth: 1
+                    }
+                }
+            }
+        });
+
+        window.analysisChart = new Chart(analysisCtx, {
+            type: 'bar',
+            data: {
+                labels: timeLabels,
+                datasets: [{
+                    label: '热度差值',
+                    data: [],
+                    backgroundColor: function(context) {
+                        const value = context.dataset.data[context.dataIndex];
+                        return value >= 0 ? 'rgba(32, 191, 107, 0.7)' : 'rgba(255, 107, 107, 0.7)';
+                    },
+                    borderColor: function(context) {
+                        const value = context.dataset.data[context.dataIndex];
+                        return value >= 0 ? '#20bf6b' : '#ff6b6b';
+                    },
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        ticks: {
+                            callback: function(value) {
+                                return value > 0 ? `+${value}` : value;
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#f8f9fa'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 12, 41, 0.9)',
+                        titleColor: '#ffd700',
+                        bodyColor: '#f8f9fa',
+                        borderColor: '#8a2be2',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.raw;
+                                return `差值: ${value >= 0 ? '+' : ''}${value}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // 添加获取真实热度数据的函数
+
+    // 修改 fetchRealHeatData 函数中的请求URL
+    async function fetchRealHeatData() {
+        try {
+            const proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
+            const baseUrl = 'https://www.enlightent.cn/research/mMovie/getRealtimeVideoHeat';
+
+            // 获取今日数据
+            const todayResponse = await fetch(proxyUrl + encodeURIComponent(baseUrl), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'accessToken=Ys87yhYgciXRuPWQwfq7DusIU%2BNjzuhbhEB9LbamS6zyy7dcBFSuU%2ByYsbPcQi6SysPeMi3r53HVy%2Bq0tjf8XBjewBaTLbnDr6qV7oQHM1o%3D&name=%E5%A4%A7%E7%94%9F%E6%84%8F%E4%BA%BA&nameId=8706280&fromDate=1764086400&toDate=1764172799&channel=iqiyi&channelType=tv'
+            });
+
+            // 获取昨日数据
+            const yesterdayResponse = await fetch(proxyUrl + encodeURIComponent(baseUrl), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'accessToken=Ys87yhYgciXRuPWQwfq7DusIU%2BNjzuhbhEB9LbamS6zyy7dcBFSuU%2ByYsbPcQi6SysPeMi3r53HVy%2Bq0tjf8XBjewBaTLbnDr6qV7oQHM1o%3D&name=%E5%A4%A7%E7%94%9F%E6%84%8F%E4%BA%BA&nameId=8706280&fromDate=1764000000&toDate=1764086399&channel=iqiyi&channelType=tv'
+            });
+
+            if (todayResponse.ok && yesterdayResponse.ok) {
+                const todayData = await todayResponse.json();
+                const yesterdayData = await yesterdayResponse.json();
+
+                // 处理数据并更新图表
+                updateHeatCharts(todayData, yesterdayData);
+            }
+        } catch (error) {
+            console.error('获取热度数据失败:', error);
+        }
+    }
+
+    // 更新热度图表的函数
+    function updateHeatCharts(todayData, yesterdayData) {
+        // 处理时间数据，转换为小时粒度
+        const processHeatData = (data) => {
+            // 创建24小时的数据点(每3小时一个点)
+            const hourlyData = new Array(9).fill(0); // 0点到24点，每3小时一个点，共9个点
+
+            // 将原始数据按小时聚合
+            data.forEach(item => {
+                const timestamp = item.timestamp_5m * 1000; // 转换为毫秒
+                const date = new Date(timestamp);
+                const hour = date.getHours();
+
+                // 每3小时为一个区间
+                const index = Math.floor(hour / 3);
+                if (index >= 0 && index < 9) {
+                    hourlyData[index] += item.total_heat;
+                }
+            });
+
+            return hourlyData;
+        };
+
+        const todayProcessed = processHeatData(todayData);
+        const yesterdayProcessed = processHeatData(yesterdayData);
+
+        // 更新主热度对比图表
+        window.heatChart.data.datasets[0].data = yesterdayProcessed;
+        window.heatChart.data.datasets[1].data = todayProcessed;
+        window.heatChart.update();
+
+        // 更新分析图表(差值)
+        const diffData = todayProcessed.map((val, idx) => val - yesterdayProcessed[idx]);
+        window.analysisChart.data.datasets[0].data = diffData;
+        window.analysisChart.update();
+    }
+
+    // 修改 refreshAllData 函数，添加酷云数据获取
+    async function refreshAllData() {
+        const refreshBtn = document.getElementById('refreshAllBtn');
+        const loadingElement = document.getElementById('loadingAll');
+        const lastUpdateElement = document.getElementById('lastUpdate');
+
+        refreshBtn.disabled = true;
+        loadingElement.style.display = 'block';
+        refreshBtn.classList.remove('pulse');
+
+        try {
+            await Promise.all([
+                fetchHeatData(),
+                fetchWeiboIndexData(),
+                fetchSSBFLData(),
+                fetchKuyunRatingData(),
+                new Promise(resolve => {
+                    fetchDoubanRating();
+                    setTimeout(resolve, 1000);
+                })
+            ]);
+
+            // 数据刷新成功后更新最后更新时间
+            updateLastUpdateTime();
+        } catch (error) {
+            console.error('刷新数据失败:', error);
+            lastUpdateElement.textContent = '更新失败';
+        } finally {
+            setTimeout(() => {
+                refreshBtn.disabled = false;
+                loadingElement.style.display = 'none';
+                refreshBtn.classList.add('pulse');
+            }, 1000);
+        }
+    }
+
+    // 修改 autoRefreshData 函数，添加酷云数据获取
+    async function autoRefreshData() {
+        const loadingElement = document.getElementById('loadingAll');
+        const refreshBtn = document.getElementById('refreshAllBtn');
+
+        // 显示加载动画
+        if (loadingElement) {
+            loadingElement.style.display = 'block';
+        }
+        if (refreshBtn) {
+            refreshBtn.classList.remove('pulse');
+        }
+
+        try {
+            await Promise.all([
+                fetchHeatData(),
+                fetchWeiboIndexData(),
+                fetchSSBFLData(),
+                fetchKuyunRatingData()
+            ]);
+
+            // 更新时间显示
+            updateLastUpdateTime();
+        } catch (error) {
+            console.error('自动刷新数据失败:', error);
+        } finally {
+            // 隐藏加载动画
+            setTimeout(() => {
+                if (loadingElement) {
+                    loadingElement.style.display = 'none';
+                }
+                if (refreshBtn) {
+                    refreshBtn.classList.add('pulse');
+                }
+            }, 1000);
+        }
+    }
 
     // 替换整个 DOMContentLoaded 事件处理函数
     document.addEventListener('DOMContentLoaded', function() {
         createBackgroundAnimation();
+        initCharts();
 
-        // 热度API接口地址
-        const heatApiUrl = 'https://mesh.if.iqiyi.com/tvg/v2/lw/base_info?entity_id=6381730674829700&device_id=2sjzaktrme4artvvrxgtloka75hrqjex&auth_cookie=56IKoNi20I7iHRA2KZds0gBjiZm3hHdByxOzQF6vazVxfgEkipWKm22X8pQ8Auej0lBA41&user_id=1097201185&vip_type=-1&vip_status=3&conduit_id=&pcv=13.114.23859&app_version=13.114.23859&ext=&app_mode=standard&scale=125&timestamp=1764069803787&src=pca_tvg&os=&ad_ext=%7B%22r%22%3A%222.9.2-ares6-pure%22%7D&sign=280BD2A1ED8D9DF545E34646577CDD3D';
+        // 延迟一点时间确保图表初始化完成再获取数据
+        setTimeout(() => {
+            fetchRealHeatData();
+        }, 1000);
 
-        // 格式化数字，添加千位分隔符
-        function formatNumber(num) {
-            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        }
-
-        // 获取热度数据
-        async function fetchHeatData() {
-            try {
-                const response = await fetch(heatApiUrl);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP错误! 状态: ${response.status}`);
-                }
-
-                const result = await response.json();
-                console.log('API返回数据:', result);
-
-                if (result && result.data && result.data.base_data) {
-                    // 处理热度值
-                    if (typeof result.data.base_data.heat === 'number') {
-                        const heat = result.data.base_data.heat;
-                        const heatValueElement = document.getElementById('heatValue');
-                        heatValueElement.textContent = formatNumber(heat);
-                    }
-
-                    // 处理更新信息
-                    if (result.data.base_data.update_info) {
-                        const updateInfo = result.data.base_data.update_info;
-
-                        // 更新时间
-                        if (updateInfo.update_notification) {
-                            document.getElementById('updateNotification').textContent = updateInfo.update_notification;
-                        }
-
-                        // 更新进度状态
-                        if (updateInfo.update_status) {
-                            document.getElementById('updateStatus').textContent = updateInfo.update_status;
-                        }
-                    }
-                } else {
-                    throw new Error('API返回数据格式不正确或热度值不存在');
-                }
-            } catch (error) {
-                console.error('获取热度数据失败:', error);
-                const heatValueElement = document.getElementById('heatValue');
-                heatValueElement.textContent = '--';
-            }
-        }
-
-        // 使用JSONP获取豆瓣评分数据
-        function fetchDoubanRating() {
-            try {
-                // 创建script标签实现JSONP
-                const script = document.createElement('script');
-                const callbackName = 'doubanCallback_' + Date.now();
-
-                window[callbackName] = function(data) {
-                    // 显示评价人数和评分
-                    document.getElementById('review-count').textContent = data.rating.count.toLocaleString() + ' 评价';
-                    document.getElementById('rating-value').textContent = data.rating.value;
-
-                    // 清理
-                    document.head.removeChild(script);
-                    delete window[callbackName];
-                };
-
-                script.src = `https://m.douban.com/rexxar/api/v2/tv/36721163?ck=jq_a&for_mobile=1&callback=${callbackName}`;
-                document.head.appendChild(script);
-            } catch (error) {
-                console.error('获取豆瓣评分失败:', error);
-                document.getElementById('review-count').textContent = '-- 评价';
-                document.getElementById('rating-value').textContent = '--';
-            }
-        }
-
-        async function fetchWeiboIndexData() {
-            const weiboIndexElement = document.getElementById('weiboIndexValue');
-
-            try {
-                const proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
-                const targetUrl = encodeURIComponent('https://rprank.tv.weibo.cn/episode/api/detail?current_uid=5311346698&pid=3281&sign=b32c6b38c121e6c9dd8f4be10914844dd6dda3be&program_type=0&ts=1764064832&c=applet&gsid=_2A25EIQ5VDeRxGeNN6lMS9CjKwjSIHXVldwadrDV6PUJbkdAbLVSskWpNScKCqj8OuNbCjRel3mMjnfZFjkk4TZY8');
-
-                const response = await fetch(proxyUrl + targetUrl);
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.code === 1000 && data.data && data.data.program) {
-                        // 提取微博指数数据
-                        const weiboScore = data.data.program.score;
-                        weiboIndexElement.textContent = weiboScore;
-                    } else {
-                        throw new Error('Invalid data format');
-                    }
-                } else {
-                    throw new Error('Failed to fetch Weibo index data');
-                }
-            } catch (error) {
-                console.error('Error fetching Weibo index data:', error);
-                weiboIndexElement.textContent = '--';
-            }
-        }
-
-        // 获取实时播放量数据
-        async function fetchSSBFLData() {
-            const ssbflElement = document.getElementById('ssbflValue');
-
-            try {
-                // 使用代理服务器获取数据
-                const proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
-                const targetUrl = encodeURIComponent('https://dengtapro.taopiaopiao.com/movie-detail.html?hideTitlebar=true&transparentStatusBar=true&mediaId=1430081');
-
-                const response = await fetch(proxyUrl + targetUrl);
-
-                if (response.ok) {
-                    const html = await response.text();
-                    // 使用正则表达式提取实时播放量
-                    const ssbflMatch = html.match(/<div\s+class="num\s+num-color">\s*<span>([^<]+)<\/span>\s*<\/div>/);
-
-                    if (ssbflMatch && ssbflMatch[1]) {
-                        ssbflElement.textContent = ssbflMatch[1];
-                    } else {
-                        throw new Error('未找到实时播放量数据');
-                    }
-                } else {
-                    throw new Error('请求失败');
-                }
-            } catch (error) {
-                console.error('获取实时播放量失败:', error);
-                ssbflElement.textContent = '--';
-            }
-        }
-
-        // 新增函数：更新最后更新时间显示
-        function updateLastUpdateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleString('zh-CN', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-            document.getElementById('lastUpdate').textContent = `最后更新: ${timeString}`;
-        }
-
-
-// 修改 refreshAllData 函数，添加酷云数据获取
-        async function refreshAllData() {
-            const refreshBtn = document.getElementById('refreshAllBtn');
-            const loadingElement = document.getElementById('loadingAll');
-            const lastUpdateElement = document.getElementById('lastUpdate');
-
-            refreshBtn.disabled = true;
-            loadingElement.style.display = 'block';
-            refreshBtn.classList.remove('pulse');
-
-            try {
-                await Promise.all([
-                    fetchHeatData(),
-                    fetchWeiboIndexData(),
-                    fetchSSBFLData(),
-                    fetchKuyunRatingData(), // 添加这一行
-                    new Promise(resolve => {
-                        fetchDoubanRating();
-                        setTimeout(resolve, 1000);
-                    })
-                ]);
-
-                // 数据刷新成功后更新最后更新时间
-                updateLastUpdateTime();
-            } catch (error) {
-                console.error('刷新数据失败:', error);
-                lastUpdateElement.textContent = '更新失败';
-            } finally {
-                setTimeout(() => {
-                    refreshBtn.disabled = false;
-                    loadingElement.style.display = 'none';
-                    refreshBtn.classList.add('pulse');
-                }, 1000);
-            }
-        }
-
-// 修改 autoRefreshData 函数，添加酷云数据获取
-        async function autoRefreshData() {
-            const loadingElement = document.getElementById('loadingAll');
-            const refreshBtn = document.getElementById('refreshAllBtn');
-
-            // 显示加载动画
-            if (loadingElement) {
-                loadingElement.style.display = 'block';
-            }
-            if (refreshBtn) {
-                refreshBtn.classList.remove('pulse');
-            }
-
-            try {
-                await Promise.all([
-                    fetchHeatData(),
-                    fetchWeiboIndexData(),
-                    fetchSSBFLData(),
-                    fetchKuyunRatingData() // 添加这一行
-                ]);
-
-                // 更新时间显示
-                updateLastUpdateTime();
-            } catch (error) {
-                console.error('自动刷新数据失败:', error);
-            } finally {
-                // 隐藏加载动画
-                setTimeout(() => {
-                    if (loadingElement) {
-                        loadingElement.style.display = 'none';
-                    }
-                    if (refreshBtn) {
-                        refreshBtn.classList.add('pulse');
-                    }
-                }, 1000);
-            }
-        }
-
-// 修改页面加载时的初始化函数，添加酷云数据获取
+        // 修改页面加载时的初始化函数，添加酷云数据获取
         Promise.all([
             fetchHeatData(),
             fetchWeiboIndexData(),
             fetchSSBFLData(),
-            fetchKuyunRatingData(), // 添加这一行
+            fetchKuyunRatingData(),
             new Promise(resolve => {
                 fetchDoubanRating();
                 setTimeout(resolve, 1000);
@@ -965,9 +1134,8 @@
             updateLastUpdateTime();
         }).catch(error => {
             console.error('初始数据加载失败:', error);
-            updateLastUpdateTime(); // 即使出错也显示时间
+            updateLastUpdateTime();
         });
-
 
         // 每3秒自动刷新一次数据（除豆瓣评分外的数据）
         setInterval(autoRefreshData, 3 * 1000);
@@ -977,14 +1145,15 @@
             fetchDoubanRating();
         }, 30 * 1000);
 
-// 在其他 setInterval 调用之后添加
-// 每3秒刷新一次酷云收视率数据
+        // 每3秒刷新一次酷云收视率数据
         setInterval(() => {
             fetchKuyunRatingData();
         }, 3 * 1000);
+
         // 刷新按钮事件
         document.getElementById('refreshAllBtn').addEventListener('click', refreshAllData);
     });
-    </script>
+</script>
+
 </body>
 </html>
